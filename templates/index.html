@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <!-- Display the logo and the name of the site -->
+    <div class="body-wrapper">
+        <header>
+            <div class="logo-part">
+                <a href="{{ url_for('index') }}" class="heading">
+                    <h2 class="logo_name">News Classifier</h2>
+                </a>
+            </div>
+    
+            <div class="options">
+                <ul>
+                    <li>About us</li>
+                    <li>Contact</li>
+                </ul>
+            </div>
+        </header>
+    
+        <!-- This is where we get the input and display the output -->
+        <main>
+            <div class="main-heading">
+                <p>Welcome to the News Classifier, an advanced tool designed to analyze and categorize news articles based on their content</p>
+            </div>
+            <form id="classify-form" class="form-data" method="post">
+                <div class="user">
+                    <div class="user-input">
+                        <input type="text" class="user-input-text" name="user_input" placeholder="Enter the article" required></textarea>
+                    </div>
+                    
+                    <div class="submit">
+                        <button class="submit-btn" type="submit">Enter</button>
+                    </div>
+                </div>
+                <div class="output-display">
+                    <!-- Display the classified type based on the user's article -->
+                    {% if prediction %}
+                        <p id="output" class="output">{{ prediction }}</p>
+                    {% else %}
+                        <p id="output" class="output">Classified output based on input</p>
+                    {% endif %}
+                </div>
+            </form>
+        </main>
+        <footer>
+            <p class="footer">All rights are reserved</p>
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+    $('#classify-form').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+
+        $.ajax({
+            type: 'POST',
+            url: '/',  // The same route where your Flask app handles POST requests
+            data: $(this).serialize(), // Serialize the form data
+            success: function(response) {
+                // Update the output with the prediction
+                $('#output').text(response.prediction);
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+        console.log()
+    });
+});
+    </script>
+</body>
+</html>
